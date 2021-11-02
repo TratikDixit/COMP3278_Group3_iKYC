@@ -29,21 +29,57 @@ DROP TABLE IF EXISTS `Customer`;
 
 # Create TABLE 'Customer'
 CREATE TABLE `Customer` (
-  `customer_id` int NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `login_time` time NOT NULL,
-  `login_date` date NOT NULL
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `custom_message` varchar(200) NOT NULL,
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `Customer` WRITE;
+--LOCK TABLES `Customer` WRITE;
 /*!40000 ALTER TABLE `Customer` DISABLE KEYS */;
-INSERT INTO `Customer` VALUES (1, "JACK", NOW(), '2021-09-01');
+--INSERT INTO `Customer` VALUES (1, "JACK", NOW(), '2021-09-01');
 /*!40000 ALTER TABLE `Customer` ENABLE KEYS */;
-UNLOCK TABLES;
+--UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `LoginHistory`;
+
+# Create TABLE 'LoginHistory'
+CREATE TABLE `LoginHistory` (
+  `username` varchar(50) NOT NULL,
+  `date_time` datetime NOT NULL,
+  FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `Account`;
 
 # Create TABLE 'Account'
+CREATE TABLE `Account` (
+  `account_number` INT NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `account_type` ENUM('Current','Saving') NOT NULL,
+  `currency` varchar(3) NOT NULL,
+  `balance` DECIMAL(50,2) NOT NULL,
+  PRIMARY KEY (`account_number`)
+  FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `Transaction`;
+
 # Create TABLE 'Transaction'
+CREATE TABLE `Transaction` (
+  `transaction_id` varchar(25) NOT NULL,
+  `amount` DECIMAL(50,2) NOT NULL,
+  `date_time` datetime NOT NULL,
+  `from_account` INT NOT NULL,
+  `to_account` INT NOT NULL,
+  PRIMARY KEY (`transaction_id`)
+  FOREIGN KEY (`from_account`) REFERENCES `Account` (`account_number`)
+  FOREIGN KEY (`to_account`) REFERENCES `Account` (`account_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 # Create other TABLE...
 
 
