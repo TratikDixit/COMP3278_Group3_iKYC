@@ -62,7 +62,7 @@ CREATE TABLE `Account` (
   `account_type` ENUM('Current','Saving') NOT NULL,
   `currency` varchar(3) NOT NULL,
   `balance` DECIMAL(50,2) NOT NULL,
-  PRIMARY KEY (`account_number`)
+  PRIMARY KEY (`account_number`),
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -75,8 +75,8 @@ CREATE TABLE `Transaction` (
   `date_time` datetime NOT NULL,
   `from_account` INT NOT NULL,
   `to_account` INT NOT NULL,
-  PRIMARY KEY (`transaction_id`)
-  FOREIGN KEY (`from_account`) REFERENCES `Account` (`account_number`)
+  PRIMARY KEY (`transaction_id`),
+  FOREIGN KEY (`from_account`) REFERENCES `Account` (`account_number`),
   FOREIGN KEY (`to_account`) REFERENCES `Account` (`account_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
