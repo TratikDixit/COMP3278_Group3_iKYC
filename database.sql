@@ -34,7 +34,7 @@ CREATE TABLE `Customer` (
   `first_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
-  `custom_message` varchar(200) NOT NULL,
+  `custom_message` varchar(200) DEFAULT 'Hello, customer',
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -57,7 +57,7 @@ DROP TABLE IF EXISTS `Account`;
 
 # Create TABLE 'Account'
 CREATE TABLE `Account` (
-  `account_number` INT NOT NULL,
+  `account_number` varchar(12) NOT NULL,
   `username` varchar(50) NOT NULL,
   `account_type` ENUM('Current','Saving') NOT NULL,
   `currency` varchar(3) NOT NULL,
