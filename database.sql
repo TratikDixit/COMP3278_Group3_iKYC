@@ -47,7 +47,7 @@ CREATE TABLE `Customer` (
 # Create TABLE 'LoginHistory'
 CREATE TABLE `LoginHistory` (
   `username` varchar(50) NOT NULL,
-  `date_time` datetime NOT NULL,
+  `date_time` date NOT NULL,
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -66,7 +66,7 @@ CREATE TABLE `Account` (
   `username` varchar(50) NOT NULL,
   `branch_id` varchar(3) NOT NULL,
   `balance` DECIMAL(50,2) NOT NULL,
-  `openDate` datetime NOT NULL,
+  `open_date` datetime NOT NULL,
   PRIMARY KEY (`account_number`),
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`),
   FOREIGN KEY (`branch_id`) REFERENCES `Branch` (`branch_id`)
