@@ -26,7 +26,10 @@ SET time_zone = "+00:00";
 -- Table structure for table `Customer`
 --
 DROP TABLE IF EXISTS `Transaction`;
+DROP TABLE IF EXISTS `CreditCard`;
+DROP TABLE IF EXISTS `BankAccount`;
 DROP TABLE IF EXISTS `Account`;
+DROP TABLE IF EXISTS `Branch`;
 DROP TABLE IF EXISTS `LoginHistory`;
 DROP TABLE IF EXISTS `Customer`;
 
@@ -48,30 +51,57 @@ CREATE TABLE `LoginHistory` (
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+# Create TABLE 'Branch'
+CREATE TABLE `BRANCH` (
+  `branch_id` varchar(3) NOT NULL,
+  `branch_name` varchar(30) NOT NULL,
+  `branch_location` varchar(200) NOT NULL,
+  `contact_number` varchar(8) NOT NULL,
+  PRIMARY KEY (`branch_id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  
 # Create TABLE 'Account'
 CREATE TABLE `Account` (
-  `account_number` varchar(12) NOT NULL,
+  `account_number` varchar(16) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `account_type` ENUM('Current','Saving') NOT NULL,
-  `currency` varchar(3) NOT NULL,
+  `branch_id` varchar(3) NOT NULL,
   `balance` DECIMAL(50,2) NOT NULL,
+  `openDate` datetime NOT NULL,
   PRIMARY KEY (`account_number`),
-  FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
+  FOREIGN KEY (`username`) REFERENCES `Customer` (`username`),
+  FOREIGN KEY (`branch_id`) REFERENCES `Branch` (`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+# Create TABLE 'BacnkAccount'
+CREATE TABLE `BankAccount` (
+	`account_number` varchar(16) NOT NULL,
+	`account_type` varchar(20) NOT NULL,
+	FOREIGN KEY (`account_number`) REFERENCES `Account` (`account_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+# Create TABLE 'CreditCard'
+CREATE TABLE `CreditCard` (
+	`account_number` varchar(16) NOT NULL,
+	`card_name` varchar(50) NOT NULL,
+	`credit_limit` DECIMAL(10,2) NOT NULL,
+	`expiry_month` DECIMAL(2,0) NOT NULL,
+	`expiry_year` DECIMAL(2,0) NOT NULL,
+	FOREIGN KEY (`account_number`) REFERENCES `Account` (`account_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # Create TABLE 'Transaction'
 CREATE TABLE `Transaction` (
   `transaction_id` varchar(25) NOT NULL,
   `amount` DECIMAL(50,2) NOT NULL,
+  `currency` varchar(3) NOT NULL,
   `date_time` datetime NOT NULL,
-  `from_account` varchar(12) NOT NULL,
-  `to_account` varchar(12) NOT NULL,
+  `from_account` varchar(16) NOT NULL,
+  `to_account` varchar(16) NOT NULL,
   PRIMARY KEY (`transaction_id`),
   FOREIGN KEY (`from_account`) REFERENCES `Account` (`account_number`),
   FOREIGN KEY (`to_account`) REFERENCES `Account` (`account_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-# Create other TABLE...
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
