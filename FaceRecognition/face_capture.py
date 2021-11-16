@@ -14,6 +14,12 @@ def main(details):
     cursor = myconn.cursor()
 
     user_name = details["username"]
+    password = details["password"]
+    first_name = details["firstName"]
+    middle_name = details["middleName"]
+    last_name = details["lastName"]
+    telegram_chat_id = details["telegramChatID"]
+
     NUM_IMGS = 20
     if not os.path.exists('../data/{}'.format(user_name)):
         os.mkdir('../data/{}'.format(user_name))
@@ -67,7 +73,6 @@ def main(details):
     train.main()
 
     #add user to database
-    insert = "INSERT INTO `Customer` VALUES (1, '%s', NOW(), '2021-09-01');"
-
-    name = cursor.execute(insert%(user_name))
+    insert = "INSERT INTO `Customer` VALUES ('%s', '%s', '%s', '%s', '%s', 'Welcome!', '%s');"
+    name = cursor.execute(insert%(user_name, password, first_name, middle_name, last_name, telegram_chat_id))
     myconn.commit()
