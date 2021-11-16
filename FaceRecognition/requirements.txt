@@ -1,3 +1,4 @@
+PyQt5
 numpy
 opencv-python
 opencv-contrib-python
@@ -5,3 +6,5 @@ mysql-connector-python
 pyttsx3
 Pillow
 pysimplegui
+requests
+python-telegram-bot
