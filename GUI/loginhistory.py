@@ -130,10 +130,10 @@ class Ui_Dialog(object):
                 row, 0, QtWidgets.QTableWidgetItem(date_time))
             city = d[1]
             self.tableWidget.setItem(
-                row, 1, QtWidgets.QTableWidgetItem(date_time))
-            city = d[2]
+                row, 1, QtWidgets.QTableWidgetItem(city))
+            country = d[2]
             self.tableWidget.setItem(
-                row, 2, QtWidgets.QTableWidgetItem(date_time))
+                row, 2, QtWidgets.QTableWidgetItem(country))
             row += 1
 
     def saveCSV(self):
