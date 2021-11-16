@@ -50,6 +50,7 @@ CREATE TABLE `LoginHistory` (
   `username` varchar(50) NOT NULL,
   `date_time` date NOT NULL,
   `city` varchar(50) NOT NULL,
+  `country` varchar(50) NOT NULL,
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
