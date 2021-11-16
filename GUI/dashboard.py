@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'dashboard.ui'
+# Form implementation generated from reading ui file 'dashboardUI.ui'
 #
 # Created by: PyQt6 UI code generator 6.2.0
 #
@@ -7,159 +7,261 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+import mysql.connector
 from loginhistory import Ui_Dialog
 from accounts import Ui_Dialog2
 from transactions import Ui_Dialog3
+from credit_transactions import Ui_Dialog4
+
+from functools import partial
 
 
 class Ui_MainWindow(object):
 
+    button = []
+    accountdata = []
+
+    def __init__(self, userName):
+        self.username = 'johnsmith123'
+
     def setupUi(self, MainWindow):
+
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(844, 619)
+        MainWindow.resize(1142, 720)
+        MainWindow.setStyleSheet(
+            "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_2.setGeometry(
-            QtCore.QRect(60, 130, 721, 141))
-        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
-        self.LoginSec = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
-        self.LoginSec.setContentsMargins(0, 0, 0, 0)
-        self.LoginSec.setObjectName("LoginSec")
-      #  self.HistoryBrowser = QtWidgets.QTextBrowser(     self.verticalLayoutWidget_2)
-   #     self.HistoryBrowser.setObjectName("HistoryBrowser")
+        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(-268, -10, 2, 2))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setObjectName("gridLayout")
+        self.logo = QtWidgets.QLabel(self.centralwidget)
+        self.logo.setGeometry(QtCore.QRect(10, 80, 481, 481))
+        self.logo.setText("")
+        self.logo.setPixmap(QtGui.QPixmap("./Images/dashboardImage.png"))
+        self.logo.setObjectName("logo")
+        self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget.setGeometry(QtCore.QRect(510, 160, 571, 122))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.LoginHistory = QtWidgets.QVBoxLayout(self.layoutWidget)
+        self.LoginHistory.setContentsMargins(0, 0, 0, 0)
+        self.LoginHistory.setObjectName("LoginHistory")
+        self.LoginHistoryList = QtWidgets.QListWidget(self.layoutWidget)
+        self.LoginHistoryList.setObjectName("LoginHistoryList")
+        self.LoginHistory.addWidget(self.LoginHistoryList)
+        self.ViewLoginHistory = QtWidgets.QPushButton(self.layoutWidget)
+        self.ViewLoginHistory.setFont(QtGui.QFont('Times', 13))
+        self.ViewLoginHistory.setStyleSheet(
+            "border-radius : 50; border: 2px black;font:bold;background-color: rgb(173, 216, 230);")
+        self.ViewLoginHistory.setObjectName("ViewLoginHistory")
+        self.ViewLoginHistory.clicked.connect(self.view_history)
+        self.LoginHistory.addWidget(self.ViewLoginHistory)
+        self.layoutWidget1 = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget1.setGeometry(QtCore.QRect(510, 20, 571, 122))
+        self.layoutWidget1.setObjectName("layoutWidget1")
+        self.ProfileHistory = QtWidgets.QVBoxLayout(self.layoutWidget1)
+        self.ProfileHistory.setContentsMargins(0, 0, 0, 0)
+        self.ProfileHistory.setObjectName("ProfileHistory")
+        self.ProfileList = QtWidgets.QListWidget(self.layoutWidget1)
+        self.ProfileList.setObjectName("ProfileList")
 
-        self.HistoryBrowser = QtWidgets.QLabel(self.verticalLayoutWidget_2)
-        self.HistoryBrowser.setObjectName("WelcomeInfo")
-        self.HistoryBrowser.setStyleSheet("background-color:#ffffff;")
-        self.LoginSec.addWidget(self.HistoryBrowser)
-        self.HistoryButton = QtWidgets.QPushButton(self.verticalLayoutWidget_2)
-        self.HistoryButton.setObjectName("HistoryButton")
-        self.HistoryButton.clicked.connect(self.view_history)
-        self.LoginSec.addWidget(self.HistoryButton, 0,
-                                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignBottom)
-        self.verticalLayoutWidget_3 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_3.setGeometry(
-            QtCore.QRect(60, 280, 721, 141))
-        self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
-        self.LoginSec = QtWidgets.QVBoxLayout(
-            self.verticalLayoutWidget_3)
-        self.LoginSec.setContentsMargins(0, 0, 0, 0)
-        self.LoginSec.setObjectName("LoginSec")
-        #self.accountBrowser = QtWidgets.QTextBrowser(self.verticalLayoutWidget_3)
-        # self.accountBrowser.setObjectName("accountBrowser")
-        self.accountBrowser = QtWidgets.QLabel(self.verticalLayoutWidget_3)
-        self.accountBrowser.setObjectName("WelcomeInfo")
-        self.accountBrowser.setStyleSheet("background-color:#ffffff;")
+        item = QtWidgets.QListWidgetItem()
+        self.ProfileList.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.ProfileList.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.ProfileList.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.ProfileList.addItem(item)
+        self.ProfileHistory.addWidget(self.ProfileList)
+        self.ViewProfile = QtWidgets.QPushButton(self.layoutWidget1)
+        self.ViewProfile.setObjectName("ViewProfile")
+        self.ProfileHistory.addWidget(self.ViewProfile)
+        self.ViewProfile.clicked.connect(self.view_accounts)
+        self.ViewProfile.setFont(QtGui.QFont('Times', 13))
+        self.ViewProfile.setStyleSheet(
+            "border-radius : 50; border: 2px black;font:bold;background-color: rgb(173, 216, 230);")
+        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget.setGeometry(QtCore.QRect(510, 410, 571, 251))
+        self.widget.setObjectName("widget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
 
-        self.LoginSec.addWidget(self.accountBrowser)
-        self.AccountButton = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
-        self.AccountButton.setObjectName("AccountButton")
-        self.AccountButton.clicked.connect(self.view_accounts)
-
-        self.LoginSec.addWidget(
-            self.AccountButton, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        self.verticalLayoutWidget_4 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_4.setGeometry(
-            QtCore.QRect(60, 430, 721, 141))
-        self.verticalLayoutWidget_4.setObjectName("verticalLayoutWidget_4")
-        self.TransactionSec = QtWidgets.QVBoxLayout(
-            self.verticalLayoutWidget_4)
-        self.TransactionSec.setContentsMargins(0, 0, 0, 0)
-        self.TransactionSec.setObjectName("TransactionSec")
-        # self.TransactionBrowser_2 = QtWidgets.QTextBrowser(self.verticalLayoutWidget_4)
-        # self.TransactionBrowser_2.setObjectName("TransactionBrowser_2")
-
-        self.TransactionBrowser_2 = QtWidgets.QLabel(
-            self.verticalLayoutWidget_4)
-        self.TransactionBrowser_2.setObjectName("TransactionBrowser_2")
-        self.TransactionBrowser_2.setStyleSheet("background-color:#ffffff;")
-        self.TransactionSec.addWidget(self.TransactionBrowser_2)
-
-        self.TransactionButton = QtWidgets.QPushButton(
-            self.verticalLayoutWidget_4)
-        self.TransactionButton.setObjectName("TransactionButton")
-        self.TransactionSec.addWidget(
-            self.TransactionButton, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        self.TransactionButton.clicked.connect(self.view_transactions)
-
-        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(60, 20, 721, 91))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.WelcomeSec = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.WelcomeSec.setContentsMargins(0, 0, 0, 0)
-        self.WelcomeSec.setObjectName("WelcomeSec")
-        # self.WelcomeInfo = QtWidgets.QTextBrowser(self.verticalLayoutWidget)
-        # self.WelcomeInfo.setObjectName("WelcomeInfo")
-
-        self.WelcomeInfo = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.WelcomeInfo.setObjectName("WelcomeInfo")
-        self.WelcomeInfo.setStyleSheet("background-color:#ffffff;")
-
-        self.WelcomeSec.addWidget(self.WelcomeInfo)
+        self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget_2.setGeometry(QtCore.QRect(510, 320, 571, 122))
+        self.layoutWidget_2.setObjectName("layoutWidget_2")
+        self.Balance = QtWidgets.QVBoxLayout(self.layoutWidget_2)
+        self.Balance.setContentsMargins(0, 0, 0, 0)
+        self.Balance.setObjectName("Balance")
+        self.balanceList = QtWidgets.QListWidget(self.layoutWidget_2)
+        self.balanceList.setObjectName("balanceList")
+        item = QtWidgets.QListWidgetItem()
+        self.balanceList.addItem(item)
+        self.Balance.addWidget(self.balanceList)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1142, 24))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.HistoryButton, self.TransactionButton)
-        MainWindow.setTabOrder(self.TransactionButton,
-                               self.TransactionBrowser_2)
-        MainWindow.setTabOrder(self.TransactionBrowser_2, self.WelcomeInfo)
 
     def retranslateUi(self, MainWindow):
-        firstname = "[FIRST]"
-        secondname = "[SECOND]"
-        username = "[usrname]"
 
-        trans = "Recent Transactions\n                TO                                AMOUNT\n" + \
-            "4567-*****-*****               500 HKD" + \
-                "1427-*****-*****             6782 HKD  "
-
-        msg = firstname + " " + secondname + "\n" + "welcome, " + username + "\n"
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowIcon(QtGui.QIcon('./Images/logo2.png'))
+        __sortingEnabled = self.LoginHistoryList.isSortingEnabled()
+        self.LoginHistoryList.setSortingEnabled(False)
 
-        self.HistoryBrowser.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                               "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-                                               "p, li { white-space: pre-wrap; }\n"
-                                               "</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+        myconn = mysql.connector.connect(
+            host="localhost", user="root", database="backend")
+        cursor = myconn.cursor()
+        select = "select LH.date_time as 'Previous Login Times' from LoginHistory LH where LH.username = '%s';" % (
+            self.username)
+        cursor.execute(select)
+        logindata = cursor.fetchall()
+        for i in range(0, len(logindata)):
+            item = QtWidgets.QListWidgetItem()
+            self.LoginHistoryList.addItem(item)
+        for i in range(0, len(logindata)):
+            iteml = self.LoginHistoryList.item(i)
+            iteml.setText(_translate(
+                "MainWindow",  logindata[i][0].strftime("%m/%d/%Y, %H:%M:%S")))
 
-                                               "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">Current Login Time:    10/10/2021  03:01:23 HKT<br /><br />Login History:  10/10/2021  03:01:23 HKT<br />                         10/10/2021  03:01:23 HKT<br />                         10/10/2021  03:01:23 HKT<br />                         06/10/2021  14:07:49 HKT</span></p></body></html>"))
-        self.HistoryButton.setText(_translate(
-            "MainWindow", "View Login History"))
-        self.accountBrowser.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                               "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-                                               "p, li { white-space: pre-wrap; }\n"
-                                               "</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-                                               "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">Account Balance:<br /><br />SAVINGS:    6000 HKD<br />CURRENT:    6770 HKD</span></p></body></html>"))
-        self.AccountButton.setText(_translate(
-            "MainWindow", "View All Accounts"))
-        self.TransactionBrowser_2.setText(_translate("MainWindow", trans))
-        self.TransactionButton.setText(_translate(
-            "MainWindow", "View All Transactions"))
-        # self.WelcomeInfo.setHtml(_translate("WelcomeInfo", "<p></p>"
-        # "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#352e77;\">Welcome [username] to xyz bank</span></p></body></html>"))
-        self.WelcomeInfo.setText(_translate(
-            "WelcomeInfo", msg))
+        self.LoginHistoryList.setSortingEnabled(__sortingEnabled)
+        self.ViewLoginHistory.setText(
+            _translate("MainWindow", "View Full Login History"))
+        __sortingEnabled = self.ProfileList.isSortingEnabled()
+        self.ProfileList.setSortingEnabled(False)
+        cursor = myconn.cursor()
+
+        user_name = "select LH.first_name, LH.middle_name, LH.last_name, LH.custom_message from Customer LH where LH.username = '%s';" % (
+            self.username)
+        # cursor.execute(select)
+        cursor.execute(user_name)
+        customerdata = cursor.fetchall()
+        item = self.ProfileList.item(0)
+        item.setText(_translate(
+            "MainWindow", "Welcome "+(self.username)+" !"))
+        item = self.ProfileList.item(1)
+        item.setText(_translate(
+            "MainWindow", "First Name : " + customerdata[0][0]))
+        item = self.ProfileList.item(2)
+        item.setText(_translate(
+            "MainWindow", "Middle Name : " + customerdata[0][1]))
+        item = self.ProfileList.item(3)
+        item.setText(_translate(
+            "MainWindow", "Last Name : " + customerdata[0][2]))
+        cursor = myconn.cursor()
+        select = "select LH.account_number  from Account LH where LH.username = '%s';" % (
+            self.username)
+        cursor.execute(select)
+        self.accountdata = cursor.fetchall()
+        select = "select LH.account_number  from CreditCard LH"
+        cursor.execute(select)
+        creditcards = cursor.fetchall()
+        accdsimpl = [i[0] for i in self.accountdata]
+        for i in creditcards:
+            if (i[0] in accdsimpl):
+                self.creditcard = i[0]
+        accountcount = len(self.accountdata)
+        select = "select LH.balance  from Account LH where LH.username = '%s';" % (
+            self.username)
+        cursor.execute(select)
+        balancedata = cursor.fetchall()
+        for i in range(accountcount):
+            self.button.append(QtWidgets.QPushButton(self.widget))
+            self.button[i].setObjectName(str(i))
+            self.button[i].released.connect(self.view_history)
+            self.verticalLayout.addWidget(self.button[i])
+            self.button[i].setFont(QtGui.QFont('Times', 13))
+            self.button[i].setStyleSheet(
+                "border-radius : 50; border: 2px black;font:bold;background-color: rgb(173, 216, 230);")
+
+        self.ProfileList.setSortingEnabled(__sortingEnabled)
+        self.ViewProfile.setText(_translate(
+            "MainWindow", "View Profile Details"))
+        for i in range(len(self.accountdata)):
+            if(self.accountdata[i][0] != self.creditcard):
+                self.button[i].setText(_translate(
+                    "MainWindow", "View Transactions for Account No: "+self.accountdata[i][0]))
+                self.button[i].clicked.connect(
+                    lambda ch, i=i: self.view_transactions(i))
+            else:
+                self.button[i].setText(_translate(
+                    "MainWindow", "View Transactions for credit Account No: "+self.accountdata[i][0]))
+                self.button[i].clicked.connect(self.view_credittransactions)
+            # self.button[i].clicked.connect(
+            #   partial(lambda: self.view_transactions(acc=str(i))))
+            # button.clicked.connect(lambda: calluser(name)) partial(
+        __sortingEnabled = self.balanceList.isSortingEnabled()
+        self.balanceList.setSortingEnabled(False)
+
+        item = QtWidgets.QListWidgetItem()
+        for i in range(0, len(self.accountdata)+2):
+            item = QtWidgets.QListWidgetItem()
+            self.balanceList.addItem(item)
+        iteml = self.balanceList.item(0)
+        iteml.setText(_translate(
+            "MainWindow",  'Your Accounts\t\tBalances'))
+        iteml = self.balanceList.item(1)
+        iteml.setText(_translate(
+            "MainWindow",  ""))
+        for i in range(2, len(self.accountdata)+2):
+            iteml = self.balanceList.item(i)
+            if(self.accountdata[i-2][0] != self.creditcard):
+                iteml.setText(_translate(
+                    "MainWindow", self.accountdata[i-2][0] + '\t\t' + str(balancedata[i-2][0])))
+            else:
+                iteml.setText(_translate(
+                    "MainWindow", self.accountdata[i-2][0] + ' (credit) \t' + str(balancedata[i-2][0])))
+
+        # iteml = self.balanceList.item(len(self.accountdata)+4)
+        # iteml.setText(_translate(
+        #     "MainWindow",  ""))
+        # iteml = self.balanceList.item(len(self.accountdata)+3)
+        # iteml.setText(_translate(
+        #     "MainWindow",  'Your Credit Card\tBalances'))
+        # iteml = self.balanceList.item(len(self.accountdata)+4)
+        # iteml.setText(_translate(
+        #     "MainWindow",  ""))
+        # iteml = self.balanceList.item(len(self.accountdata)+5)
+        # iteml.setText(_translate(
+        #     "MainWindow",  self.accountdata[i-2][0] + '\t' + str(balancedata[i-2][0])))
+        self.balanceList.setSortingEnabled(__sortingEnabled)
 
     def view_history(self):
         self.Dialog = QtWidgets.QWidget()
-        self.ui = Ui_Dialog()
+        self.ui = Ui_Dialog(self.username)
         self.ui.setupUi(self.Dialog)
         self.Dialog.show()
 
     def view_accounts(self):
         self.Dialog = QtWidgets.QWidget()
-        self.ui = Ui_Dialog2()
+        self.ui = Ui_Dialog2(self.username)
         self.ui.setupUi(self.Dialog)
         self.Dialog.show()
 
-    def view_transactions(self):
+    def view_transactions(self, i):
+        acc = self.accountdata[i][0]
         self.Dialog = QtWidgets.QWidget()
-        self.ui = Ui_Dialog3()
+        self.ui = Ui_Dialog3(acc)
+        self.ui.setupUi(self.Dialog)
+        self.Dialog.show()
+
+    def view_credittransactions(self, i):
+
+        self.Dialog = QtWidgets.QWidget()
+        self.ui = Ui_Dialog4(self.creditcard)
         self.ui.setupUi(self.Dialog)
         self.Dialog.show()
 
@@ -168,7 +270,8 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = Ui_MainWindow('johnSmith123')
+
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec())
