@@ -45,6 +45,7 @@ def main():
     max_iterations = 50
     iterations = 0
     while iterations < max_iterations:
+        success = False
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=3)
@@ -57,7 +58,8 @@ def main():
             id_, conf = recognizer.predict(roi_gray)
 
             # 3.1 If the face is recognized
-            if conf >= 20:
+            if conf >= 30:
+                success = True
                 # print(id_)
                 # print(labels[id_])
                 font = cv2.QT_FONT_NORMAL
@@ -71,8 +73,8 @@ def main():
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), (2))
 
                 # Find the customer's information in the database.
-                select = "SELECT customer_id, name, DAY(login_date), MONTH(login_date), YEAR(login_date) FROM " \
-                         "Customer WHERE name='%s'" % (
+                select = "SELECT first_name, middle_name, last_name FROM " \
+                         "Customer WHERE username='%s'" % (
                              name)
                 name = cursor.execute(select)
                 result = cursor.fetchall()
@@ -88,7 +90,6 @@ def main():
                         'message': f"The customer {current_name} is NOT FOUND in the database. Please create a new "
                                    f"account "
                     }
-                    break
 
                 # If the customer's information is found in the database
                 else:
@@ -97,21 +98,13 @@ def main():
                     
     
                     """
-                    # Update the data in database
-                    update = "UPDATE Customer SET login_date=%s WHERE name=%s"
-                    val = (date, current_name)
-                    cursor.execute(update, val)
-                    update = "UPDATE Customer SET login_time=%s WHERE name=%s"
-                    val = (current_time, current_name)
-                    cursor.execute(update, val)
-                    myconn.commit()
+
                     # add extra return values and SQL statements to customize welcome message and load the data
                     return_dict = {
                         'success': True,
                         'name' : current_name,
                         'cur_date' : date
                     }
-                    break
 
                     # engine.runAndWait()
 
@@ -135,11 +128,11 @@ def main():
         if k == ord('q'):
             break
         iterations += 1
+        if success:
+            break
     cap.release()
     cv2.destroyAllWindows()
     return return_dict
-
-
 
 if __name__ == '__main__':
     main()
