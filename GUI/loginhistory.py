@@ -8,7 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector
-
+import pandas as pd
 
 class Ui_Dialog(object):
     def __init__(self, user_name):
@@ -31,7 +31,7 @@ class Ui_Dialog(object):
         myconn = mysql.connector.connect(
             host="localhost", user="root", database="facerecognition", passwd="Lamcy#108")
         cursor = myconn.cursor()
-        select = "select LH.date_time from LoginHistory LH where LH.username = '%s';" % (
+        select = "select LH.date_time, LH.city, LH.country from LoginHistory LH where LH.username = '%s';" % (
             self.user_name)
         cursor.execute(select)
         data = cursor.fetchall()
@@ -47,7 +47,7 @@ class Ui_Dialog(object):
         # self.tableWidget.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.tableWidget.setObjectName("tableWidget")
 
-        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setColumnCount(3)
         self.tableWidget.setRowCount(counterRows)
         self.tableWidget.setColumnWidth(0, 150)
         '''
@@ -58,11 +58,11 @@ class Ui_Dialog(object):
 
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
-        '''
         item2 = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(1, item2)
         item3 = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(2, item3)
+        '''
         item4 = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(3, item4)
         '''
@@ -81,12 +81,32 @@ class Ui_Dialog(object):
 
         self.label_2.setObjectName("label_2")
 
+        self.horizontalLayoutWidget_1 = QtWidgets.QWidget(Dialog)
+        self.horizontalLayoutWidget_1.setGeometry(
+            QtCore.QRect(550, 600, 400, 40))
+        self.horizontalLayoutWidget_1.setObjectName("horizontalLayoutWidget_1")
+        self.horizontalLayout_1 = QtWidgets.QHBoxLayout(
+            self.horizontalLayoutWidget_1)
+        self.horizontalLayout_1.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_1.setObjectName("horizontalLayout_1")
+        self.pushButton_1 = QtWidgets.QPushButton(
+            self.horizontalLayoutWidget_1)
+
+        self.pushButton_1.setObjectName("pushButton_1")
+        self.pushButton_1.setStyleSheet(
+            "font:bold;background-color: rgb(173, 216, 230);")
+
+        self.horizontalLayout_1.addWidget(self.pushButton_1)
+        self.pushButton_1.clicked.connect(self.saveCSV)
+
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Login History"))
+        self.pushButton_1.setText(_translate("Dialog", "Save to CSV"))
+
         self.label_2.setFont(QtGui.QFont('Times', 20))
         # print(self.user_name)
         self.label_2.setText(_translate(
@@ -98,7 +118,7 @@ class Ui_Dialog(object):
         myconn = mysql.connector.connect(
             host="localhost", user="root", database="facerecognition", passwd="Lamcy#108")
         cursor = myconn.cursor()
-        select = "select LH.date_time from LoginHistory LH where LH.username = '%s';" % (
+        select = "select LH.date_time, LH.city, LH.country from LoginHistory LH where LH.username = '%s';" % (
             self.user_name)
         cursor.execute(select)
         data = cursor.fetchall()
@@ -108,7 +128,27 @@ class Ui_Dialog(object):
             date_time = d[0].strftime("%m/%d/%Y, %H:%M:%S")
             self.tableWidget.setItem(
                 row, 0, QtWidgets.QTableWidgetItem(date_time))
+            city = d[1]
+            self.tableWidget.setItem(
+                row, 1, QtWidgets.QTableWidgetItem(date_time))
+            city = d[2]
+            self.tableWidget.setItem(
+                row, 2, QtWidgets.QTableWidgetItem(date_time))
             row += 1
+
+    def saveCSV(self):
+        myconn = mysql.connector.connect(
+            host="localhost", user="root", database="facerecognition", passwd="Lamcy#108")
+        cursor = myconn.cursor()
+        select = "select LH.date_time, LH.city, LH.country from LoginHistory LH where LH.username = '%s';" % (
+            self.user_name)
+        cursor.execute(select)
+        data = cursor.fetchall()
+        if(data != []):
+            data_df = pd.DataFrame(
+                data, columns=["Login Time", "City", "Country"])
+            data_df.to_csv("../csv_downloads/login_history.csv")
+
 
 
 '''
