@@ -154,7 +154,7 @@ class Ui_Dialog2(object):
         if(data != []):
             data_df = pd.DataFrame(
                 data, columns=["Account Number", "Account Type", "Branch ID", "Opening Date"])
-            data_df.to_csv("accounts_details.csv")
+            data_df.to_csv("../csv_downloads/accounts_details.csv")
 
 
 '''
