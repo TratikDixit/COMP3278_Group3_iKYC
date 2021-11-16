@@ -41,6 +41,7 @@ CREATE TABLE `Customer` (
   `middle_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `custom_message` varchar(200) DEFAULT 'Hello, customer',
+  `telegram_chat_id` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -48,6 +49,7 @@ CREATE TABLE `Customer` (
 CREATE TABLE `LoginHistory` (
   `username` varchar(50) NOT NULL,
   `date_time` date NOT NULL,
+  `city` varchar(50) NOT NULL,
   FOREIGN KEY (`username`) REFERENCES `Customer` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
