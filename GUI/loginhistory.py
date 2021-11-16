@@ -7,12 +7,18 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+import mysql.connector
 
 
 class Ui_Dialog(object):
+    def __init__(self, user_name):
+        self.user_name = user_name
+
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(844, 619)
+        Dialog.resize(1142, 720)
+        Dialog.setStyleSheet(
+            "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));")
         self.horizontalLayoutWidget_2 = QtWidgets.QWidget(Dialog)
         self.horizontalLayoutWidget_2.setGeometry(
             QtCore.QRect(10, 470, 811, 101))
@@ -21,20 +27,88 @@ class Ui_Dialog(object):
             self.horizontalLayoutWidget_2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.pushButton_2 = QtWidgets.QPushButton(
-            self.horizontalLayoutWidget_2)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout_2.addWidget(self.pushButton_2)
+
+        myconn = mysql.connector.connect(
+            host="localhost", user="root", database="backend")
+        cursor = myconn.cursor()
+        select = "select LH.date_time from LoginHistory LH where LH.username = '%s';" % (
+            self.user_name)
+        cursor.execute(select)
+        data = cursor.fetchall()
+        counterRows = 0
+        for d in data:
+            counterRows += 1
+
+        self.tableWidget = QtWidgets.QTableWidget(Dialog)
+        self.tableWidget.setGeometry(QtCore.QRect(640, 140, 180, 451))
+        # self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        # self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # self.tableWidget.verticalHeader().setStretchLastSection(True)
+        # self.tableWidget.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.tableWidget.setObjectName("tableWidget")
+
+        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setRowCount(counterRows)
+        self.tableWidget.setColumnWidth(0, 150)
+        '''
+        self.tableWidget.setColumnWidth(1, 130)
+        self.tableWidget.setColumnWidth(2, 130)
+        self.tableWidget.setColumnWidth(3, 153)
+        '''
+
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(0, item)
+        '''
+        item2 = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(1, item2)
+        item3 = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(2, item3)
+        item4 = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(3, item4)
+        '''
+
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(30, 180, 400, 400))
+        self.label.setText("")
+        self.label.setPixmap(QtGui.QPixmap("./Images/loginhistory.png"))
+        self.label.setScaledContents(True)
+        self.label.setObjectName("label")
+
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(120, 100, 281, 50))
+        self.label_2.setObjectName("label_2")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton_2.setText(_translate("Dialog", "GoBack"))
+        Dialog.setWindowTitle(_translate("Dialog", "Login History"))
+        self.label_2.setFont(QtGui.QFont('Times', 20))
+        # print(self.user_name)
+        self.label_2.setText(_translate(
+            "Dialog", "Full Login History of %s" % (self.user_name)))
+
+        item = self.tableWidget.horizontalHeaderItem(0)
+        item.setText(_translate("Dialog", "Login Times"))
+
+        myconn = mysql.connector.connect(
+            host="localhost", user="root", database="backend")
+        cursor = myconn.cursor()
+        select = "select LH.date_time from LoginHistory LH where LH.username = '%s';" % (
+            self.user_name)
+        cursor.execute(select)
+        data = cursor.fetchall()
+        row = 0
+
+        for d in data:
+            date_time = d[0].strftime("%m/%d/%Y, %H:%M:%S")
+            self.tableWidget.setItem(
+                row, 0, QtWidgets.QTableWidgetItem(date_time))
+            row += 1
 
 
+'''
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -43,3 +117,4 @@ if __name__ == "__main__":
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec())
+'''
