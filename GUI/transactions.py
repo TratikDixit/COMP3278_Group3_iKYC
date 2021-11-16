@@ -150,7 +150,7 @@ class Ui_Dialog3():
         if(data != []):
             data_df = pd.DataFrame(
                 data, columns=["Transaction ID", "Amount", "Currency", "To Account", "Date-Time"])
-            data_df.to_csv("to_transactions.csv")
+            data_df.to_csv("../csv_downloads/to_transactions.csv")
 
         select = "select T.transaction_id, T.amount, T.currency, T.from_account, T.date_time from Transaction T where T.to_account = %s;" % (
             self.account)
@@ -159,7 +159,7 @@ class Ui_Dialog3():
         if(data != []):
             data_df = pd.DataFrame(
                 data, columns=["Transaction ID", "Amount", "Currency",  "From Account", "Date-Time"])
-            data_df.to_csv("from_transactions.csv")
+            data_df.to_csv("../csv_downloads/from_transactions.csv")
 
     def searchByDateTime(self, Dialog):
 
