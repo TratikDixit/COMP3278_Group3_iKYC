@@ -156,7 +156,7 @@ class Ui_Dialog4():
         if(data != []):
             data_df = pd.DataFrame(
                 data, columns=["Transaction ID", "Amount",  "Currency", "To Account", "Date-Time"])
-            fileName = f"{current_time}to_credit_transactions.csv" 
+            fileName = f"{current_time}_{self.account}_to_credit_transactions.csv" 
             data_df.to_csv(f"../csv_downloads/{fileName}")
 
         select = "select T.transaction_id, T.amount, T.currency, T.from_account, T.date_time from Transaction T where T.to_account = %s;" % (
@@ -166,7 +166,7 @@ class Ui_Dialog4():
         if(data != []):
             data_df = pd.DataFrame(
                 data, columns=["Transaction ID", "Amount", "Currency", "From Account", "Date-Time"])
-            fileName = f"{current_time}from_credit_transactions.csv" 
+            fileName = f"{current_time}_{self.account}_from_credit_transactions.csv" 
 
             data_df.to_csv(f"../csv_downloads/{fileName}")
 
