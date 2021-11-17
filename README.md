@@ -48,7 +48,6 @@ After successful login or registration, all other screens should load automatica
 
 It is vital to only run the code from inside the GUI folder. The code will not run otherwise.
 
-
 ### Also update the mysql connectors in the files listed below. Change the username and password of the connecter to that which runs on your local server.
 
 accounts.py
@@ -58,7 +57,14 @@ login_GUI.py
 loginhistory.py
 transactions.py
 
+### data folder
 
+For the face_capture to work correctly, please create an empty folder called data in your projects root directory. All images captured of new users face will be uploaded to this folder and will consequently be used to train the face recognition model. 
+
+```
+mkdir data
+
+```
 
 ### 2. Database Design
 
