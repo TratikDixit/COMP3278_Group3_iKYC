@@ -111,14 +111,14 @@ class Ui_Dialog4():
         self.tableWidget2.setHorizontalHeaderItem(4, item5)
 
         self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(30, 180, 300, 300))
+        self.label.setGeometry(QtCore.QRect(30, 220, 300, 300))
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("./Images/transactions.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
         self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setGeometry(QtCore.QRect(80, 100, 400, 40))
+        self.label_2.setGeometry(QtCore.QRect(80, 120, 300, 120))
         self.label_2.setStyleSheet('font:bold; color: purple;')
 
         self.label_2.setObjectName("label_2")
@@ -315,9 +315,27 @@ class Ui_Dialog4():
 
         self.pushButton_1.setText(_translate("Dialog", "Save to CSV"))
         # print(self.user_name)
+
+
+        query = "Select card_name, credit_limit, expiry_month, expiry_year from CreditCard where account_number ='%s'" % (self.account)
+
+        name = cursor.execute(query)
+        result = cursor.fetchall()
+        card_name = result[0][0]
+        credit_limit = result[0][1]
+        expiry_month = result[0][2]
+        expiry_year = result[0][3]
+
+        card_details = f"Card Name: {card_name}\n\nCredit Limit: {credit_limit}\n\nExpiry(mm/yy): {expiry_month}/{expiry_year}"
+
         self.label_2.setText(_translate(
-            "Dialog", "Transactions for %s" % (self.account)))
-        self.label_2.setFont(QtGui.QFont('Times', 16))
+            "Dialog", "Transactions for %s\n\n%s" % (self.account, card_details)))
+
+
+
+
+
+        self.label_2.setFont(QtGui.QFont('Times', 12))
         self.label3.setText(_translate("Dialog", "Search by Date: "))
         self.label4.setText(_translate("Dialog", "Search by Amount: "))
         self.label3.setFont(QtGui.QFont('Times', 14))

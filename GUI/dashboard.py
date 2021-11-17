@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
 
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("Dashboard")
         MainWindow.resize(1142, 720)
         MainWindow.setStyleSheet(
             "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(255, 255, 255, 255));")
